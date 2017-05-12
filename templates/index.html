@@ -117,6 +117,7 @@
             for(var i = 0; i < 5; i++){
                 var is_date_filled = false;
                 var portfolio_price = 0;
+                var portfolio_total = 0;
 
                 for (var stock in g_portfolio){
                     //need to add date, and five days of closes
@@ -124,10 +125,13 @@
                         input.push(g_portfolio[stock].five_day_data[i]['Date']);
                         is_date_filled = true;
                     }
-                    portfolio_price += parseInt(g_portfolio[stock].five_day_data[i]['Close']);
+                    portfolio_price = parseInt(g_portfolio[stock].five_day_data[i]['Close']);
+                    number_of_stocks = parseInt(g_portfolio[stock].count);
+                    portfolio_total += (portfolio_price * number_of_stocks);
                 }
-                input.push(portfolio_price);
+                input.push(portfolio_total);
                 rows.push(input);
+                portfolio_total = 0;
                 input = []
             }
 
