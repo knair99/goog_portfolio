@@ -150,17 +150,13 @@ def execute(amount, strategy, ex):
 		balance = get_portfolio(balance, stock_type)
 
 	if ex == 'double_1':
-		print 'Round 1'
 		older_portfolio = {}
 		older_global_stock_index = {} 
 		older_portfolio = portfolio.copy()
 		older_global_stock_index = global_stock_index.copy()
-		print older_portfolio
 	elif ex == 'double_2':
-		print 'round 2'
 		portfolio = dict( portfolio.items() + older_portfolio.items() )
 		global_stock_index =  dict(older_global_stock_index.items() + global_stock_index.items())
-		print portfolio
 
 	
 	return portfolio
