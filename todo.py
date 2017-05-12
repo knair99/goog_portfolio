@@ -42,7 +42,7 @@ x4. sometimes portfolio exceeds total amount - for all except growth stocks
 5. FIX all in the bug list
 6. Build retry and timeout mechanism for server error
 7. performance tracking
-
+8. goog charts 
 
 BUG LIST:
 -----------
