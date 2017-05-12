@@ -59,7 +59,7 @@
 
     <h3 id='portfolio_title'>Portfolio breakdown</h3>
 
-    <p> Live portfolio value: <span id='live_portfolio_value'> </span> </p>
+    <p id='live_portfolio_announcement'> Live portfolio value: <span id='live_portfolio_value'> </span> </p>
 
      <div class="container" id='main_container'>
            <div class = 'container' id='stock_container'>          
@@ -68,6 +68,15 @@
 
      <div class="container" id='five_day_stocks' style='width: 900px; height: 500px;'></div>
      <div class="container" id='portfolio_stocks' style='width: 900px; height: 500px;'></div>
+     
+     <div class="container">
+         <div class="row">
+             <div class='col-md-6' id="stocks_piechart" style="width: 900px; height: 500px;"></div>
+             <div class='col-md-6' id="counts_piechart" style="width: 900px; height: 500px;"></div>
+         </div>
+     </div>
+
+     
    
      <script type="text/javascript">
 
@@ -150,11 +159,59 @@
         }
 
 
+        function drawPieChart() {
+
+            var rows = [];
+
+            rows.push(['Stock', 'Amount spent']);
+
+            for (var stock in g_portfolio){
+                var input = [];
+                input.push(g_portfolio[stock].name);
+                input.push(g_portfolio[stock].amount);
+                rows.push(input);
+            }
+
+            var data = google.visualization.arrayToDataTable(rows);
+
+            var options = {
+              title: 'Portfolio breakdown by stock'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('stocks_piechart'));
+            chart.draw(data, options);
+        }
+
+        function drawPieChartByCount() {
+
+            var rows = [];
+
+            rows.push(['Stock', 'Stocks bought']);
+
+            for (var stock in g_portfolio){
+                var input = [];
+                input.push(g_portfolio[stock].name);
+                input.push(g_portfolio[stock].count);
+                rows.push(input);
+            }
+
+            var data = google.visualization.arrayToDataTable(rows);
+
+            var options = {
+              title: 'Portfolio breakdown by stock'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('counts_piechart'));
+            chart.draw(data, options);
+        }
+
+
          $(function(){
 
             $("#stock_image").hide();
             $("#portfolio_image").hide();
             $('#portfolio_title').hide();
+            $('#live_portfolio_announcement').hide();
 
             $(window).keydown(function(event){
                 if(event.keyCode == 13){
@@ -174,9 +231,9 @@
             }
 
 
-            window.setInterval(function(){
-              update_values();
-            }, 5000);
+            //window.setInterval(function(){
+              //update_values();
+            //}, 5000);
 
 
             $('#calc_button').click(function(){
@@ -221,6 +278,8 @@
                         google.charts.setOnLoadCallback(drawStockChart);
 
                         google.charts.setOnLoadCallback(drawPortfolioChart);
+                        google.charts.setOnLoadCallback(drawPieChart);
+                        google.charts.setOnLoadCallback(drawPieChartByCount);
                         
                     },
                     error: function(error) {
