@@ -64,9 +64,8 @@
            </div>           
      </div>
 
-     <div class="container" id='five_day_stocks' style='width: 900px; height: 500px;'>
-         
-     </div>
+     <div class="container" id='five_day_stocks' style='width: 900px; height: 500px;'></div>
+     <div class="container" id='portfolio_stocks' style='width: 900px; height: 500px;'></div>
    
      <script type="text/javascript">
 
@@ -74,24 +73,72 @@
          
         function drawStockChart(){
 
-            var input = [['Price at close', 'Date']];
-
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Date');
-            data.addColumn('number', 'Price');
-
+            var input = [];
+            var rows = [];
+            var heading = ['Date'];
             for (var stock in g_portfolio){
-                var close = parseInt(g_portfolio[stock].five_day_data[0]['Close']);
-                data.addRow(
-                    [g_portfolio[stock].name, close]);
+                heading.push(g_portfolio[stock].name);
+            }
+            rows.push(heading);
+
+            for(var i = 0; i < 5; i++){
+                var is_date_filled = false;
+                for (var stock in g_portfolio){
+                    //need to add date, and five days of closes
+                    if(is_date_filled === false){
+                        input.push(g_portfolio[stock].five_day_data[i]['Date']);
+                        is_date_filled = true;
+                    }
+                    var stock_price = parseInt(g_portfolio[stock].five_day_data[i]['Close']);
+                    input.push(stock_price);
+                }
+                rows.push(input);
+                input = []
             }
 
+            var data = new google.visualization.arrayToDataTable(rows);
+
             var options = {
-                title: 'Five day stock portfolio history (individual)',
+                title: 'Five day history (individual stocks)',
                 legend: { position: 'none' },
             };
 
-            var chart = new google.visualization.Histogram(document.getElementById('five_day_stocks'));
+            var chart = new google.visualization.LineChart(document.getElementById('five_day_stocks'));
+            chart.draw(data, options);
+
+        }
+
+        function drawPortfolioChart(){
+
+            var input = [];
+            var rows = [];
+            var heading = ['Date', 'Closing Portfolio Value'];
+            rows.push(heading);
+            for(var i = 0; i < 5; i++){
+                var is_date_filled = false;
+                var portfolio_price = 0;
+
+                for (var stock in g_portfolio){
+                    //need to add date, and five days of closes
+                    if(is_date_filled === false){
+                        input.push(g_portfolio[stock].five_day_data[i]['Date']);
+                        is_date_filled = true;
+                    }
+                    portfolio_price += parseInt(g_portfolio[stock].five_day_data[i]['Close']);
+                }
+                input.push(portfolio_price);
+                rows.push(input);
+                input = []
+            }
+
+            var data = new google.visualization.arrayToDataTable(rows);
+
+            var options = {
+                title: 'Five day history (portfolio)',
+                legend: { position: 'none' },
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('portfolio_stocks'));
             chart.draw(data, options);
 
         }
@@ -132,8 +179,8 @@
                         $("#portfolio_image").show();
                         
                         d = new Date();
-                        $("#stock_image").attr("src", "static/stocks.png?"+d.getTime());  
-                        $("#portfolio_image").attr("src", "static/portfolio.png?"+d.getTime());                        
+                        //$("#stock_image").attr("src", "static/stocks.png?"+d.getTime());  
+                        //$("#portfolio_image").attr("src", "static/portfolio.png?"+d.getTime());                        
                         var portfolio = response.portfolio;
                         portfolio = JSON.parse(portfolio);
                         g_portfolio = portfolio;
@@ -152,6 +199,8 @@
 
                         google.charts.load("current", {packages:["corechart"]});
                         google.charts.setOnLoadCallback(drawStockChart);
+
+                        google.charts.setOnLoadCallback(drawPortfolioChart);
                         
                     },
                     error: function(error) {
