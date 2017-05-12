@@ -16,13 +16,15 @@ FRONT END INPUT:
 -----------
 x1. dropdown lists for strategy picking
 x2. text box for amount
-3. portfolio values for multiple strategy
+x3. portfolio values for multiple strategy
+4. maybe implement a slider for portfolio split?
+5. pretty up the inputs via CSS
 
 FRONT END OUTPUT:
 -----------
 z1. P elements with portfolio details:
 x2. for each in stock:
-3.	amount spent - pie chart
+3.	amount spent - pie chart - How the money are divided to buy the suggested stock.
 x4. portfolio image itself
 5. Live overall portfolio value
 x6. Strategy differentiation
@@ -44,7 +46,7 @@ x4. sometimes portfolio exceeds total amount - for all except growth stocks
 5. FIX all in the bug list
 6. Build retry and timeout mechanism for server error
 7. performance tracking
-8. goog charts 
+x8. goog charts 
 
 BUG LIST:
 -----------

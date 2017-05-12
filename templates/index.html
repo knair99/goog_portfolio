@@ -59,6 +59,8 @@
 
     <h3 id='portfolio_title'>Portfolio breakdown</h3>
 
+    <p> Live portfolio value: <span id='live_portfolio_value'> </span> </p>
+
      <div class="container" id='main_container'>
            <div class = 'container' id='stock_container'>          
            </div>           
@@ -162,6 +164,20 @@
                 }
             });
 
+            function update_values() {
+            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+            $.getJSON($SCRIPT_ROOT+"/live_value",
+                function(data) {
+                    console.log(data);
+                    $("#live_portfolio_value").text(data.live_value)
+                });
+            }
+
+
+            window.setInterval(function(){
+              update_values();
+            }, 5000);
+
 
             $('#calc_button').click(function(){
                 var symbol = $('#symbol').val();
@@ -193,7 +209,7 @@
                             //console.log(portfolio[stock].name);
                             $('#stock_container').append('<h4> ' + stock + '</h4>');
                             $('#stock_container').append('<p> Name: ' + portfolio[stock].name + '</p>');
-                            $('#stock_container').append('<p> Type of investment strategy: ' + portfolio[stock].strategy + ' investing</p>');
+                            $('#stock_container').append('<p> Type of investment strategy: ' + portfolio[stock].strategy + ' investing </p>');
                             $('#stock_container').append('<p> Stocks purchased: ' + portfolio[stock].count + '</p>');
                             $('#stock_container').append('<p> Stock price: ' + portfolio[stock].price + '</p>');
                             $('#stock_container').append('<p> Amount spent: ' + portfolio[stock].amount + '</p>');

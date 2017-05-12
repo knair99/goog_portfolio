@@ -27,6 +27,7 @@ is_ratio_method_over = False
 older_portfolio = {}
 older_global_stock_index = {}
 five_day_data = {}
+cached_portfolio = {}
 
 def reset():
 	global global_stock_index, portfolio, is_stock_drawn, is_ratio_method_over, uninvested_amount
@@ -135,7 +136,12 @@ def get_portfolio(amount, stock_type, strategy):
 
 	return total_balance
 
-
+def get_live_portfolio_value():
+	live_portfolio_value = 0
+	print cached_portfolio
+	for stock, details in cached_portfolio.items():
+		live_portfolio_value += details['count'] * details['price']
+	return live_portfolio_value
 
 def execute(amount, strategy, ex):
 	global portfolio, dictionary_strategies, older_portfolio
@@ -159,7 +165,7 @@ def execute(amount, strategy, ex):
 		portfolio = dict( portfolio.items() + older_portfolio.items() )
 		global_stock_index =  dict(older_global_stock_index.items() + global_stock_index.items())
 
-	
+	cached_portfolio = portfolio.copy()
 	return portfolio
 
 	

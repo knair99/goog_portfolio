@@ -50,6 +50,13 @@ def runn():
 	web_response['code'] = 0
 	web_response['portfolio'] = json.dumps(portfolio)
 	return jsonify(web_response)
+
+
+@app.route('/live_value', methods= ['GET'])
+def get_live():
+    live_portfolio_value = sb.get_live_portfolio_value()
+    return jsonify(live_value=live_portfolio_value)
+ 	
  	
 if __name__ == "__main__":
     app.run()
