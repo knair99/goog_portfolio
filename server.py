@@ -3,8 +3,6 @@ from flask import request
 from flask import render_template
 from flask import abort
 from flask import jsonify
-
-import lookup as lk
 import json
 import stock_bot as sb
 
@@ -24,7 +22,7 @@ def enter():
 @app.route("/calculate", methods=["POST"])
 def runn():
 	data = request.data
-	sb.clear_everything()
+	sb.reset()
 	
 	if not request.form['total_amount']:
 		abort(400, 'Enter a valid amount, greater than 5000!')
@@ -39,22 +37,18 @@ def runn():
 
 	strategy_1 = request.form['strategy_1']
 
-
 	if request.form['strategy_2'] == 'None':
 			portfolio = sb.execute(total_amount, strategy_1.lower(), ex='single')
 	else:
 		strategy_2 = request.form['strategy_2']
 		portfolio = sb.execute(total_amount/2, strategy_1.lower(), ex='double_1')
-		sb.clear_everything()
+		sb.reset()
 		portfolio = sb.execute(total_amount/2, strategy_2.lower(), ex='double_2')
 
 
-	# ticker_symbol = request.form["stock_symbol"]
-	# stock_dict = lk.pull_stock(ticker_symbol)	
 	web_response = {}
 	web_response['code'] = 0
 	web_response['portfolio'] = json.dumps(portfolio)
-	#json_values = json.dumps(web_response)
 	return jsonify(web_response)
  	
 if __name__ == "__main__":

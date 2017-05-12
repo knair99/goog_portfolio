@@ -2,7 +2,6 @@
 from yahoo_finance import Share as sh
 import operator
 import urllib2
-import lookup
 import time
 from datetime import datetime, timedelta
 
@@ -29,15 +28,13 @@ older_portfolio = {}
 older_global_stock_index = {}
 five_day_data = {}
 
-def clear_everything():
+def reset():
 	global global_stock_index, portfolio, is_stock_drawn, is_ratio_method_over, uninvested_amount
 	global_stock_index = {}
 	portfolio = {}
 	is_stock_drawn = False
 	is_ratio_method_over = False
 	uninvested_amount = 0
-	#lookup.clear_everything()
-	#execute clean script here
 
 
 def get_eligible_stock(stock_dictionary, amount):
@@ -63,14 +60,6 @@ def cache_stocks(stock_type):
 			return False
 	return True
 
-def generate_five_day():
-	for symbol, each in global_stock_index.items():
-		success = False
-		while not success:
-			success = lookup.draw_stock(each, portfolio[symbol]['index'])
-			#repeat for http errors
-
-	lookup.draw_portfolio(portfolio)
 
 def get_portfolio(amount, stock_type):
 	global portfolio, uninvested_amount, is_stock_drawn, global_stock_index, is_ratio_method_over
@@ -139,28 +128,12 @@ def get_portfolio(amount, stock_type):
 		uninvested_amount =  amount
 		return 0
 
-	#get new stocks with highest peg AND < price
-
 	#if dictionary was empty
 	if bool(portfolio) == False:
-		#print 'updating once'
 		portfolio = stock_dictionary.copy()
 
 	return total_balance
 
-
-def run_diagnostics():
-	sum_stocks = 0
-	sum_portfolio_counts = 0 
-	for each in portfolio:
-		print portfolio[each], '-- amount ->', portfolio[each]['amount']
-		sum_stocks += portfolio[each]['amount']
-		print portfolio[each], 'count ', portfolio[each]['count'], 'price', portfolio[each]['price']
-		print 'for a total of ', portfolio[each]['count'] * portfolio[each]['price']
-		sum_portfolio_counts += portfolio[each]['count'] * portfolio[each]['price']
-		print "***" * 3
-	print "Total spent: ", sum_portfolio_counts
-	print "total allocated:", sum_stocks
 
 
 def execute(amount, strategy, ex):
@@ -175,10 +148,7 @@ def execute(amount, strategy, ex):
 
 	while balance > 0:
 		balance = get_portfolio(balance, stock_type)
-		#run_diagnostics()
 
-
-	#plot five day historical data for new stocks
 	if ex == 'double_1':
 		print 'Round 1'
 		older_portfolio = {}
@@ -192,7 +162,6 @@ def execute(amount, strategy, ex):
 		global_stock_index =  dict(older_global_stock_index.items() + global_stock_index.items())
 		print portfolio
 
-	#generate_five_day()
 	
 	return portfolio
 
