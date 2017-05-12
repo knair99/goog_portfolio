@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+ <html lang="en">
+ 
+ <head>
+ 
+     <title> Stock Portfolio Suggestion Engine </title>
+ 
+     <!-- Bootstrap core CSS -->
+     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  
+     <script
+      src="https://code.jquery.com/jquery-1.12.4.min.js"
+      integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+      crossorigin="anonymous"> 
+      </script>    
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+ </head>
+ 
+ <body>
+ 
+     <div class="container">
+ 
+         <form class="form-signin" action="/calculate" method="post" role="form" id="search_box">
+
+             <h2 align="center">Stock Portfolio Suggestion Engine </h2>
+
+             <!--dropdown for strategy 1-->
+             <!--dropdown for strategy 1-->
+              <select name="strategy_1">
+                <option> None </option>
+                <option>Index</option>
+                <option>Value</option>
+                <option>Growth</option>
+                <option>Ethical</option>
+                <option>Quality</option>
+              </select>
+              <br>
+
+            <!--dropdown for strategy 2-->
+              <select name="strategy_2">
+                <option> None </option>
+                <option>Index</option>
+                <option>Value</option>
+                <option>Growth</option>
+                <option>Ethical</option>
+                <option>Quality</option>
+              </select>
+
+             <input type="text" name="total_amount" id="symbol" class="form-control" placeholder="Enter Amount To Invest" required autofocus> 
+             <button class="btn btn-lg btn-primary btn-block" type="button" id="calc_button">Calculate </button>
+         </form>
+
+
+      
+     </div>
+
+    <h3 id='portfolio_title'>Portfolio breakdown</h3>
+
+     <div class="container" id='main_container'>
+           <div class = 'container' id='stock_container'>          
+           </div>           
+     </div>
+
+     <div class="container" id='image_containers'>
+         <img id="portfolio_image" src="{{url_for('static', filename='portfolio.png')}}" />
+         <img id="stock_image" src="{{url_for('static', filename='stocks.png')}}" />
+     </div>
+   
+     <script type="text/javascript">
+         
+         $(function(){
+
+            $("#stock_image").hide();
+            $("#portfolio_image").hide();
+            $('#portfolio_title').hide();
+
+            $(window).keydown(function(event){
+                if(event.keyCode == 13){
+                    $("#calc_button").click();
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+
+            $('#calc_button').click(function(){
+                var symbol = $('#symbol').val();
+                $.ajax({
+                    url: '/calculate',
+                    data: $('form').serialize(),
+                    type: 'POST',
+                    success: function(response) {
+
+                        console.log(response)
+                        //handle all errors here
+                        if(response['code'] != 0){
+                            alert(response['message'])
+                            return;
+                        }
+
+                        //else, continue
+                        $("#stock_image").show();
+                        $("#portfolio_image").show();
+                        
+                        d = new Date();
+                        $("#stock_image").attr("src", "static/stocks.png?"+d.getTime());  
+                        $("#portfolio_image").attr("src", "static/portfolio.png?"+d.getTime());                        
+                        var portfolio = response.portfolio;
+                        portfolio = JSON.parse(portfolio);
+                        console.log(portfolio);
+                        for (var stock in portfolio){
+                            //console.log(portfolio[stock].name);
+                            $('#stock_container').append('<h4> ' + stock + '</h4>');
+                            $('#stock_container').append('<p> Name:' + portfolio[stock].name + '</p>');
+                            $('#stock_container').append('<p> Stocks purchased:' + portfolio[stock].count + '</p>');
+                            $('#stock_container').append('<p> Stock price:' + portfolio[stock].price + '</p>');
+                            $('#stock_container').append('<p> Amount spent:' + portfolio[stock].amount + '</p>');
+                            $('#stock_container').append('<p> Name:' + portfolio[stock].name + '</p>');
+                            $('#stock_container').append('<h2> ' + '----------------' + '</h4>');
+                        }
+                        
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+                
+            });
+
+         });
+
+     </script>
+
+ </body>
+ 
+ </html>
