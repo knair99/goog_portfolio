@@ -24,6 +24,8 @@ z1. P elements with portfolio details:
 x2. for each in stock:
 3.	amount spent - pie chart
 x4. portfolio image itself
+5. Live overall portfolio value
+x6. Strategy differentiation
 
 BACKEND 
 -----------

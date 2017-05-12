@@ -61,7 +61,7 @@ def cache_stocks(stock_type):
 	return True
 
 
-def get_portfolio(amount, stock_type):
+def get_portfolio(amount, stock_type, strategy):
 	global portfolio, uninvested_amount, is_stock_drawn, global_stock_index, is_ratio_method_over
 
 	sum_peg = 0
@@ -86,6 +86,7 @@ def get_portfolio(amount, stock_type):
 		internal_dictionary['name'] = stock.get_name()
 		internal_dictionary['index'] = index
 		internal_dictionary['five_day_data'] = five_day_data[each_stock]
+		internal_dictionary['strategy'] = strategy
 		index = index + 1
 		#calculate sum here for later on
 		sum_peg += internal_dictionary['peg']
@@ -147,7 +148,7 @@ def execute(amount, strategy, ex):
 		ret = cache_stocks(stock_type)
 
 	while balance > 0:
-		balance = get_portfolio(balance, stock_type)
+		balance = get_portfolio(balance, stock_type, strategy)
 
 	if ex == 'double_1':
 		older_portfolio = {}
