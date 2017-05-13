@@ -28,6 +28,9 @@ older_portfolio = {}
 older_global_stock_index = {}
 five_day_data = {}
 cached_portfolio = {}
+last_amount = 0
+last_strategy = ''
+never_calculated = True
 
 def reset():
 	global global_stock_index, portfolio, is_stock_drawn, is_ratio_method_over, uninvested_amount
@@ -138,7 +141,14 @@ def get_portfolio(amount, stock_type, strategy):
 
 def get_live_portfolio_value():
 	live_portfolio_value = 0
-	print cached_portfolio
+	if bool(portfolio) == False:
+		if never_calculated is False:
+			cached_portfolio = get_portfolio(last_amount, last_strategy, ex='single')
+		else:
+			return 0
+	else:
+		cached_portfolio = portfolio.copy()
+
 	for stock, details in cached_portfolio.items():
 		live_portfolio_value += details['count'] * details['price']
 	return live_portfolio_value
@@ -146,6 +156,11 @@ def get_live_portfolio_value():
 def execute(amount, strategy, ex):
 	global portfolio, dictionary_strategies, older_portfolio
 	global global_stock_index, older_global_stock_index
+	
+	global last_strategy, last_amount
+	last_amount = amount
+	last_strategy = strategy
+
 	balance = amount
 
 	stock_type = dictionary_strategies[strategy]
@@ -165,7 +180,7 @@ def execute(amount, strategy, ex):
 		portfolio = dict( portfolio.items() + older_portfolio.items() )
 		global_stock_index =  dict(older_global_stock_index.items() + global_stock_index.items())
 
-	cached_portfolio = portfolio.copy()
+	never_calculated = False
 	return portfolio
 
 	

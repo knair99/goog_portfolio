@@ -62,7 +62,10 @@
      </div>
 
 
-    <p id='live_portfolio_announcement'> Live portfolio value: <span id='live_portfolio_value'> </span> </p>
+    <h3 align='center' id='live_portfolio_announcement'> Live portfolio value: 
+        <span id='live_portfolio_value'> </span> 
+    </h3>
+
     <br><br> <h4 align='center' id ='portfolio_title'> Portfolio breakdown: </h3> <br>
     <div class='container'>
      <div class="row" id='main_container'>
@@ -238,14 +241,18 @@
             $.getJSON($SCRIPT_ROOT+"/live_value",
                 function(data) {
                     console.log(data);
-                    $("#live_portfolio_value").text(data.live_value)
+                    if (data.live_value !== 0){
+                    $('#live_portfolio_announcement').show();
+                    $("#live_portfolio_value").show();
+                    $("#live_portfolio_value").text(data.live_value);
+                    }
                 });
             }
 
 
-            //window.setInterval(function(){
-              //update_values();
-            //}, 5000);
+            window.setInterval(function(){
+              update_values();
+            }, 5000);
 
 
             $('#calc_button').click(function(){
