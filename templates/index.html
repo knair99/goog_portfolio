@@ -37,7 +37,7 @@
                 <option>Ethical</option>
                 <option>Quality</option>
               </select>
-              <br>
+              <br><br>
 
             <!--dropdown for strategy 2-->
               <select name="strategy_2">
@@ -48,8 +48,10 @@
                 <option>Ethical</option>
                 <option>Quality</option>
               </select>
+              <br><br>
 
              <input type="text" name="total_amount" id="symbol" class="form-control" placeholder="Enter Amount To Invest" required autofocus> 
+             <br>
              <button class="btn btn-lg btn-primary btn-block" type="button" id="calc_button">Calculate </button>
          </form>
 
@@ -111,7 +113,7 @@
 
             var options = {
                 title: 'Five day history (individual stocks)',
-                legend: { position: 'none' },
+                legend: { position: 'right' },
             };
 
             var chart = new google.visualization.LineChart(document.getElementById('five_day_stocks'));
@@ -150,7 +152,7 @@
 
             var options = {
                 title: 'Five day history (portfolio)',
-                legend: { position: 'none' },
+                legend: { position: 'bottom' },
             };
 
             var chart = new google.visualization.LineChart(document.getElementById('portfolio_stocks'));
@@ -175,7 +177,7 @@
             var data = google.visualization.arrayToDataTable(rows);
 
             var options = {
-              title: 'Portfolio breakdown by stock'
+              title: 'Portfolio breakdown by stock',
             };
 
             var chart = new google.visualization.PieChart(document.getElementById('stocks_piechart'));
