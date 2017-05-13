@@ -29,6 +29,7 @@
 
              <!--dropdown for strategy 1-->
              <!--dropdown for strategy 1-->
+            <span> Select investment strategy 1 (Mandatory) : </span>
               <select name="strategy_1">
                 <option> None </option>
                 <option>Index</option>
@@ -40,6 +41,7 @@
               <br><br>
 
             <!--dropdown for strategy 2-->
+            <span> Select investment strategy 2 (Optionally)   : </span>
               <select name="strategy_2">
                 <option> None </option>
                 <option>Index</option>
@@ -59,24 +61,30 @@
       
      </div>
 
-    <h3 id='portfolio_title'>Portfolio breakdown</h3>
 
     <p id='live_portfolio_announcement'> Live portfolio value: <span id='live_portfolio_value'> </span> </p>
-
-     <div class="container" id='main_container'>
-           <div class = 'container' id='stock_container'>          
+    <br><br> <h4 align='center' id ='portfolio_title'> Portfolio breakdown: </h3> <br>
+    <div class='container'>
+     <div class="row" id='main_container'>
+           <div class = 'col-md-12' id='stock_container'> 
+           <table id='stock_table' class="table table-striped">
+           </table>         
            </div>           
      </div>
-
-     <div class="container" id='five_day_stocks' style='width: 900px; height: 500px;'></div>
-     <div class="container" id='portfolio_stocks' style='width: 900px; height: 500px;'></div>
+     </div>
+    
+    <br><br> <h4 align='center' id ='portfolio_title_history'> Portfolio 5-day history: </h3> <br>
+    <div class="container" id='five_day_stocks' style='width: 900px; height: 500px;'></div>
+    <div class="container" id='portfolio_stocks' style='width: 900px; height: 500px;'></div>
      
-     <div class="container">
+    <br><br> <h4 align='center' id ='portfolio_title_pies'> Portfolio breakdown charts: </h3> <br>
+    <div class="container">
          <div class="row">
              <div class='col-md-6' id="stocks_piechart" style="width: 900px; height: 500px;"></div>
              <div class='col-md-6' id="counts_piechart" style="width: 900px; height: 500px;"></div>
          </div>
      </div>
+
 
      
    
@@ -213,6 +221,8 @@
             $("#stock_image").hide();
             $("#portfolio_image").hide();
             $('#portfolio_title').hide();
+            $('#portfolio_title_history').hide();
+            $('#portfolio_title_pies').hide();
             $('#live_portfolio_announcement').hide();
 
             $(window).keydown(function(event){
@@ -246,7 +256,7 @@
                     type: 'POST',
                     success: function(response) {
 
-                        console.log(response)
+                        //console.log(response)
                         //handle all errors here
                         if(response['code'] != 0){
                             alert(response['message'])
@@ -263,16 +273,27 @@
                         var portfolio = response.portfolio;
                         portfolio = JSON.parse(portfolio);
                         g_portfolio = portfolio;
-                        console.log(portfolio);
+                        $('#portfolio_title').show();
+                        $('#portfolio_title_history').show();
+                        $('#portfolio_title_pies').show();
+
+                        var heading = '<thead class="thead-inverse"> <tr>' + 
+                                            '<th> Stock </th> <th> Name</th> <th>Strategy used</th>' +
+                                            '<th> Stocks bought </th> <th> Price </th> <th> Amount spent </th>' +
+                                            '</tr> </thead> <tbody> </tbody>';
+
+                        $('#stock_table').append(heading);
+
                         for (var stock in portfolio){
-                            //console.log(portfolio[stock].name);
-                            $('#stock_container').append('<h4> ' + stock + '</h4>');
-                            $('#stock_container').append('<p> Name: ' + portfolio[stock].name + '</p>');
-                            $('#stock_container').append('<p> Type of investment strategy: ' + portfolio[stock].strategy + ' investing </p>');
-                            $('#stock_container').append('<p> Stocks purchased: ' + portfolio[stock].count + '</p>');
-                            $('#stock_container').append('<p> Stock price: ' + portfolio[stock].price + '</p>');
-                            $('#stock_container').append('<p> Amount spent: ' + portfolio[stock].amount + '</p>');
-                            $('#stock_container').append('<h2> ' + '----------------' + '</h4>');
+
+                            var string_of_rows = '<tr>' + '<td>' + '<h5>' + stock + '</h5>' + '</td>' +
+                            '<td>' + portfolio[stock].name + '</td>' +
+                            '<td>' + portfolio[stock].strategy  + '</td>' +
+                            '<td>' + portfolio[stock].count + '</td>' +
+                            '<td>' + portfolio[stock].price + '</td>' +
+                            '<td>' + portfolio[stock].amount + '</td>' + '</tr>';
+
+                            $('#stock_table > tbody:last-child').append(string_of_rows);
                         }
 
 
