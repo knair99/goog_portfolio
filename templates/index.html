@@ -29,8 +29,8 @@
 
              <!--dropdown for strategy 1-->
              <!--dropdown for strategy 1-->
-            <span> Select investment strategy 1 (Mandatory) : </span>
-              <select name="strategy_1">
+            <label> Select primary investment strategy: </label>
+              <select name="strategy_1"  class="form-control input-sm">
                 <option> None </option>
                 <option>Index</option>
                 <option>Value</option>
@@ -38,11 +38,11 @@
                 <option>Ethical</option>
                 <option>Quality</option>
               </select>
-              <br><br>
+              <br>
 
             <!--dropdown for strategy 2-->
-            <span> Select investment strategy 2 (Optionally)   : </span>
-              <select name="strategy_2">
+            <label> Select secondary investment strategy: </label>
+              <select name="strategy_2"  class="form-control input-sm">
                 <option> None </option>
                 <option>Index</option>
                 <option>Value</option>
@@ -50,8 +50,9 @@
                 <option>Ethical</option>
                 <option>Quality</option>
               </select>
-              <br><br>
+              <br>
 
+            <label> Investment amount: </label>        
              <input type="text" name="total_amount" id="symbol" class="form-control" placeholder="Enter Amount To Invest" required autofocus> 
              <br>
              <button class="btn btn-lg btn-primary btn-block" type="button" id="calc_button">Calculate </button>
@@ -285,8 +286,8 @@
                         $('#portfolio_title_pies').show();
 
                         var heading = '<thead class="thead-inverse"> <tr>' + 
-                                            '<th> Stock </th> <th> Name</th> <th>Strategy used</th>' +
-                                            '<th> Stocks bought </th> <th> Price </th> <th> Amount spent </th>' +
+                                            '<th> STOCK </th> <th> NAME</th> <th>INVESTMENT STRATEGY</th>' +
+                                            '<th> NO: STOCKS BOUGHT </th> <th> PRICE </th> <th> AMOUNT SPENT FOR STOCK </th>' +
                                             '</tr> </thead> <tbody> </tbody>';
 
                         $('#stock_table').append(heading);

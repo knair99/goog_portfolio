@@ -33,7 +33,7 @@ def runn():
 
 
 	if request.form['strategy_1'] == 'None':
-		abort(400, 'Please choose atleast one valid strategy')
+		abort(400, 'Primary investment strategy cannot be blank. Please choose a strategy')
 
 	strategy_1 = request.form['strategy_1']
 
