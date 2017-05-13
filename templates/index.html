@@ -15,22 +15,66 @@
       </script>    
      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style type="text/css">
+    body{
+        position: relative; /* required */
+        padding-top: 70px;  /* prevent content to go underneath the fixed navbar */
+        font-size: 18px;
+        font-style: lucida;
+        }
+    </style>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $("body").scrollspy({
+            target: "#myNavbar",
+            offset: 70
+        }) 
+    });
 
+    </script>
  
  </head>
  
- <body>
+ <body background="{{url_for('static', filename='ny2.jpg')}}" style="background-repeat: no-repeat; background-attachment: fixed; background-size:cover;">
+
+ <nav id="myNavbar" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
  
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbarCollapse"> 
+                    <span class="sr-only">Toggle navigation</span> 
+                    <span class="icon-bar"></span> 
+                    <span class="icon-bar"></span> 
+                    <span class="icon-bar"></span> 
+                </button>
+                <a class="navbar-brand" href="#search_box" style="font-size: 25px">Stock Portfolio Suggestion Engine</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="navbarCollapse" align ="right">
+                <ul class="nav navbar-nav">
+                    
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">See My Portfolio!<b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        <li class="active"><a href="#live_portfolio_announcement">Portfolio Breakdown</a></li>
+                        <li><a href="#portfolio_title_history">Week history</a></li>
+                        <li><a href="#stocks_piechart">Amount Breakdown</a></li>
+                        <li><a href="#counts_piechart">Share Breakdown</a></li>
+
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
      <div class="container">
  
          <form class="form-signin" action="/calculate" method="post" role="form" id="search_box">
 
-             <h2 align="center">Stock Portfolio Suggestion Engine </h2>
 
              <!--dropdown for strategy 1-->
              <!--dropdown for strategy 1-->
             <label> Select primary investment strategy: </label>
-              <select name="strategy_1"  class="form-control input-sm">
+              <select name="strategy_1"  class="form-control input-sm" style="background: transparent;">
                 <option> None </option>
                 <option>Index</option>
                 <option>Value</option>
@@ -42,7 +86,7 @@
 
             <!--dropdown for strategy 2-->
             <label> Select secondary investment strategy: </label>
-              <select name="strategy_2"  class="form-control input-sm">
+              <select name="strategy_2"  class="form-control input-sm" style="background-color: transparent;">
                 <option> None </option>
                 <option>Index</option>
                 <option>Value</option>
@@ -57,21 +101,18 @@
              <br>
              <button class="btn btn-lg btn-primary btn-block" type="button" id="calc_button">Calculate </button>
          </form>
-
-
-      
      </div>
 
-
+<div id="output" style="visibility: none">
     <h3 align='center' id='live_portfolio_announcement'> Live portfolio value: 
         <span id='live_portfolio_value'> </span> 
     </h3>
 
-    <br><br> <h4 align='center' id ='portfolio_title'> Portfolio breakdown: </h3> <br>
+    <br><br> <h3 align='center' id ='portfolio_title'> Portfolio breakdown: </h3> <br>
     <div class='container'>
      <div class="row" id='main_container'>
            <div class = 'col-md-12' id='stock_container'> 
-           <table id='stock_table' class="table table-striped">
+           <table id='stock_table' class="table">
            </table>         
            </div>           
      </div>
@@ -82,22 +123,17 @@
     <div class="container" id='portfolio_stocks' style='width: 900px; height: 500px;'></div>
      
     <br><br> <h4 align='center' id ='portfolio_title_pies'> Portfolio breakdown charts: </h3> <br>
-    <div class="container">
-         <div class="row">
-             <div class='col-md-6' id="stocks_piechart" style="width: 900px; height: 500px;"></div>
-             <div class='col-md-6' id="counts_piechart" style="width: 900px; height: 500px;"></div>
+    <div class="container" id="stocks_piechart" style="width: 900px; height: 500px;"></div>
+    <div class="container" id="counts_piechart" style="width: 900px; height: 500px;"></div>
          </div>
      </div>
 
-
+</div>
      
-   
-     <script type="text/javascript">
-
+   <script type="text/javascript">
         var g_portfolio;
          
         function drawStockChart(){
-
             var input = [];
             var rows = [];
             var heading = ['Date'];
@@ -105,7 +141,6 @@
                 heading.push(g_portfolio[stock].name);
             }
             rows.push(heading);
-
             for(var i = 0; i < 5; i++){
                 var is_date_filled = false;
                 for (var stock in g_portfolio){
@@ -120,21 +155,16 @@
                 rows.push(input);
                 input = []
             }
-
             var data = new google.visualization.arrayToDataTable(rows);
-
             var options = {
                 title: 'Five day history (individual stocks)',
                 legend: { position: 'right' },
+                backgroundColor: { fill:'transparent' }
             };
-
             var chart = new google.visualization.LineChart(document.getElementById('five_day_stocks'));
             chart.draw(data, options);
-
         }
-
         function drawPortfolioChart(){
-
             var input = [];
             var rows = [];
             var heading = ['Date', 'Closing Portfolio Value'];
@@ -143,7 +173,6 @@
                 var is_date_filled = false;
                 var portfolio_price = 0;
                 var portfolio_total = 0;
-
                 for (var stock in g_portfolio){
                     //need to add date, and five days of closes
                     if(is_date_filled === false){
@@ -159,76 +188,56 @@
                 portfolio_total = 0;
                 input = []
             }
-
             var data = new google.visualization.arrayToDataTable(rows);
-
             var options = {
                 title: 'Five day history (portfolio)',
                 legend: { position: 'bottom' },
+                backgroundColor: { fill:'transparent' }
             };
-
             var chart = new google.visualization.LineChart(document.getElementById('portfolio_stocks'));
             chart.draw(data, options);
-
         }
-
-
         function drawPieChart() {
-
             var rows = [];
-
             rows.push(['Stock', 'Amount spent']);
-
             for (var stock in g_portfolio){
                 var input = [];
                 input.push(g_portfolio[stock].name);
                 input.push(g_portfolio[stock].amount);
                 rows.push(input);
             }
-
             var data = google.visualization.arrayToDataTable(rows);
-
             var options = {
               title: 'Portfolio breakdown by stock',
+              backgroundColor: { fill:'transparent' }
             };
-
             var chart = new google.visualization.PieChart(document.getElementById('stocks_piechart'));
             chart.draw(data, options);
         }
-
         function drawPieChartByCount() {
-
             var rows = [];
-
             rows.push(['Stock', 'Stocks bought']);
-
             for (var stock in g_portfolio){
                 var input = [];
                 input.push(g_portfolio[stock].name);
                 input.push(g_portfolio[stock].count);
                 rows.push(input);
             }
-
             var data = google.visualization.arrayToDataTable(rows);
-
             var options = {
-              title: 'Portfolio breakdown by stock'
+              title: 'Portfolio breakdown by shares',
+              backgroundColor: { fill: 'transparent'}
             };
-
             var chart = new google.visualization.PieChart(document.getElementById('counts_piechart'));
             chart.draw(data, options);
         }
-
-
          $(function(){
-
             $("#stock_image").hide();
             $("#portfolio_image").hide();
             $('#portfolio_title').hide();
             $('#portfolio_title_history').hide();
             $('#portfolio_title_pies').hide();
             $('#live_portfolio_announcement').hide();
-
             $(window).keydown(function(event){
                 if(event.keyCode == 13){
                     $("#calc_button").click();
@@ -236,7 +245,6 @@
                     return false;
                 }
             });
-
             function update_values() {
             $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
             $.getJSON($SCRIPT_ROOT+"/live_value",
@@ -249,13 +257,9 @@
                     }
                 });
             }
-
-
             window.setInterval(function(){
               update_values();
             }, 5000);
-
-
             $('#calc_button').click(function(){
                 var symbol = $('#symbol').val();
                 $.ajax({
@@ -263,15 +267,14 @@
                     data: $('form').serialize(),
                     type: 'POST',
                     success: function(response) {
-
                         //console.log(response)
                         //handle all errors here
                         if(response['code'] != 0){
                             alert(response['message'])
                             return;
                         }
-
                         //else, continue
+                        $('#outputno').show();
                         $("#stock_image").show();
                         $("#portfolio_image").show();
                         
@@ -284,30 +287,22 @@
                         $('#portfolio_title').show();
                         $('#portfolio_title_history').show();
                         $('#portfolio_title_pies').show();
-
                         var heading = '<thead class="thead-inverse"> <tr>' + 
                                             '<th> STOCK </th> <th> NAME</th> <th>INVESTMENT STRATEGY</th>' +
                                             '<th> NO: STOCKS BOUGHT </th> <th> PRICE </th> <th> AMOUNT SPENT FOR STOCK </th>' +
                                             '</tr> </thead> <tbody> </tbody>';
-
                         $('#stock_table').append(heading);
-
                         for (var stock in portfolio){
-
                             var string_of_rows = '<tr>' + '<td>' + '<h5>' + stock + '</h5>' + '</td>' +
                             '<td>' + portfolio[stock].name + '</td>' +
                             '<td>' + portfolio[stock].strategy  + '</td>' +
                             '<td>' + portfolio[stock].count + '</td>' +
                             '<td>' + portfolio[stock].price + '</td>' +
                             '<td>' + portfolio[stock].amount + '</td>' + '</tr>';
-
                             $('#stock_table > tbody:last-child').append(string_of_rows);
                         }
-
-
                         google.charts.load("current", {packages:["corechart"]});
                         google.charts.setOnLoadCallback(drawStockChart);
-
                         google.charts.setOnLoadCallback(drawPortfolioChart);
                         google.charts.setOnLoadCallback(drawPieChart);
                         google.charts.setOnLoadCallback(drawPieChartByCount);
@@ -319,9 +314,7 @@
                 });
                 
             });
-
          });
-
      </script>
 
  </body>
