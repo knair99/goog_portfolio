@@ -5,6 +5,8 @@ from flask import abort
 from flask import jsonify
 import json
 import stock_bot as sb
+import urllib2
+
 
 app = Flask(__name__)
 
@@ -21,13 +23,21 @@ def enter():
 
 @app.route("/calculate", methods=["POST"])
 def runn():
+	try:
+		urllib2.urlopen('http://216.58.192.142', timeout=1)
+	except urllib2.URLError as err:
+		abort(400, 'No internet connection!')
+
 	data = request.data
 	sb.reset()
 	
 	if not request.form['total_amount']:
 		abort(400, 'Enter a valid amount, greater than 5000!')
 	else:
-		total_amount = float(request.form['total_amount'])
+		try:
+			total_amount = float(request.form['total_amount'])
+		except ValueError:
+			abort(400, 'Please enter a valid numerical amount')
 		if total_amount < 5000:
 			abort(400, 'Enter a valid amount, greater than 5000!')
 

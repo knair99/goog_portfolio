@@ -59,3 +59,17 @@ BUG LIST:
     raise YQLResponseMalformedError()
 YQLResponseMalformedError: Response malformed.
 
+
+test cases:
+
+0. blank amount
+1. invalid amount
+2. amount < 50000
+3. Primary strategy not selected
+4. Both strategies selected
+5. After initial page load, turn wifi off
+6. all fields are blank
+7. check negative amount
+8. double click doesnt submit twice
+9. menu tests - check with nothing too
+10. 
