@@ -4,6 +4,7 @@ import operator
 import urllib2
 import time
 from datetime import datetime, timedelta
+from BeautifulSoup import BeautifulSoup as bs
 
 #Global
 growth_stocks 	= ['AAPL', 'FB', 'VMW', 'NFLX', 'AMZN']
@@ -57,12 +58,43 @@ def cache_stocks(stock_type):
 			global_stock_index[each_stock] = stock
 			date_now = datetime.now().date()
 			date_five_before = (datetime.now() - timedelta(days=10)).date()
-			five_day_data[each_stock] = stock.get_historical(str(date_five_before), str(date_now))
-			five_day_data[each_stock] = five_day_data[each_stock][:5]
+			#five_day_data[each_stock] = stock.get_historical(str(date_five_before), str(date_now))
+			five_day_data[each_stock] = get_custom_historical_data(each_stock)
+			#five_day_data[each_stock] = five_day_data[each_stock][:5]
 		except urllib2.HTTPError:
 			print "Server error (Cache) - Retrying"
 			return False
 	return True
+
+def get_custom_historical_data(name):
+	base_url_1 = "https://finance.yahoo.com/quote/" 
+	base_url_2 = "/history/"
+
+	url = base_url_1 + name + base_url_2
+
+	response = urllib2.urlopen(url)
+	html = response.read()
+
+	soup = bs(html)
+	table = soup.findAll('table')
+
+	rows = table[1].tbody.findAll('tr')
+
+	five_day_data = []
+	for each_row in rows:
+		d = {} 
+		divs = each_row.findAll('td')
+		date_div = divs[0].span.text
+		close_text = divs[1].span.text
+		if close_text == 'Dividend':
+			continue
+		price_close = float(close_text)
+		d['Date'] = date_div
+		d['Close'] = price_close
+		five_day_data.append(d)
+
+	return five_day_data[:5]
+
 
 
 def get_portfolio(amount, stock_type, strategy):
